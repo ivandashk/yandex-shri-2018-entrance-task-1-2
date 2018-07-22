@@ -26,6 +26,13 @@ export function initMap(ymaps, containerId) {
     objectManager.add(data);
   });
 
+  objectManager.clusters.events.add('add', function (e) {
+    let cluster = objectManager.clusters.getById(e.get('objectId'));
+    if (cluster.properties.geoObjects.some(object => !object.isActive)) {
+      cluster.options.preset = 'islands#redClusterIcons';
+    }
+  });
+
   // details
   objectManager.objects.events.add('click', event => {
     const objectId = event.get('objectId');

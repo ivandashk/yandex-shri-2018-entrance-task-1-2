@@ -52,6 +52,31 @@ lat: 37.62102 + rand() * 0.180189
 ```
 Предположение оказалось верным, теперь станции расположены в пределах Москвы и ближайшего Подмосковья
 
+## Изменение иконки кластера, в котором есть неисправный объект
+В решении данной проблемы очень помог [комментарий пользователя Masis Abul к посту в блоге](https://yandex.ru/blog/mapsapi/55358).
+В момент создания кластера, мы проверяем все входящие в него объекты при помощи функции Array.prototype.some(). Если хотя бы один элемент удовлетворяет условию, для данного кластера создаем/изменяем свойство preset.
+В map.js добавляем
+```
+objectManager.clusters.events.add('add', function (e) {
+    let cluster = objectManager.clusters.getById(e.get('objectId'));
+    if (cluster.properties.geoObjects.some(object => !object.isActive)) {
+      cluster.options.preset = 'islands#redClusterIcons';
+    }
+  });
+```
+
+Получаем следующую картину:
+![5](https://pp.userapi.com/c846019/v846019655/a61c7/Om_mnx-fsWM.jpg)
+
+## Отображение попапа при клике на объект
+TODO
+
+## Бонус. Формат индекса
+Стилизационное украшение. Задание формата индекса позволит работать с индексами, похожими на действущие по г. Москва
+```
+serialNumber: faker.address.zipCode("1#####"),
+```
+
 ## Бонус. Ошибка окружения
 Перед первым запуском, после запуска webpack-dev-server получил ошибку webpack'a несмотря на то, что версия webpack обновлена до 4.16.1 и [оператор расширения для объектов находится в finished proposals](https://github.com/tc39/proposals/blob/master/finished-proposals.md), а значит, должен находится в последней спецификацией языка и транспилироваться при помощи webpack без babel
 ```

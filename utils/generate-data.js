@@ -20,10 +20,10 @@ exports.generateData = function() {
 
   for (let i = 0; i < 721; i++) {
     data.push({
-      serialNumber: faker.address.zipCode(),
+      serialNumber: faker.address.zipCode("1#####"),
       isActive: Math.random() > 0.03,
-      lat: 55.755222 + rand() * 0.12242,
-      long: 37.62102 + rand() * 0.180189
+      long: 55.755222 + rand() * 0.12242,
+      lat: 37.62102 + rand() * 0.180189
     });
   }
 
