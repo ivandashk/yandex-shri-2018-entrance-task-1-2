@@ -30,7 +30,7 @@ import { initMap } from "./map";
 ```
 
 ## Отображение станций
-Карта отображается, но на ней нет станций. Сравниваем содержимое файла map.js с [документацией](https://tech.yandex.ru/maps/doc/jsapi/2.1/dg/concepts/object-manager/about-docpage/) и примером в [песочнице](https://tech.yandex.ru/maps/jsbox/2.1/object_manager), обнаруживаем, что несмотря на то, что объекты были созданы, разработчик забыл добавить их на карту.
+Карта отображается, но на ней нет станций. Сравниваем содержимое файла map.js с [документацией](https://tech.yandex.ru/maps/doc/jsapi/2.1/dg/concepts/object-manager/about-docpage/) и примером в [песочнице](https://tech.yandex.ru/maps/jsbox/2.1/object_manager), обнаруживаем, что, несмотря на то, что объекты были созданы, разработчик забыл добавить их на карту.
 ```
 loadList().then(data => {
     console.log(data);
