@@ -1,12 +1,12 @@
 # Комментарии к решению 
-## Импорт-экспорт модуля
+## Экспорт модуля map
 При первом запуске в консоли получаем
 ```
 WARNING in ./src/index.js 4:2-9
 "export 'default' (imported as 'initMap') was not found in './map'
 ```
 
-Можно решить двумя способами:
+Можно решить следующими способами:
 В src/map.js, 5
 ```
 export default function initMap(ymaps, containerId) {
@@ -53,38 +53,83 @@ lat: 37.62102 + rand() * 0.180189
 Предположение оказалось верным, теперь станции расположены в пределах Москвы и ближайшего Подмосковья
 
 ## Изменение иконки кластера, в котором есть неисправный объект
-В решении данной проблемы очень помог [комментарий пользователя Masis Abul к посту в блоге](https://yandex.ru/blog/mapsapi/55358).
-В момент создания кластера, мы проверяем все входящие в него объекты при помощи функции Array.prototype.some(). Если хотя бы один элемент удовлетворяет условию, для данного кластера создаем/изменяем свойство preset.
-В map.js добавляем
+В процессе решения данной проблемы сначала удалось найти [комментарий пользователя Masis Abul к посту в блоге](https://yandex.ru/blog/mapsapi/55358).
+Затем нашел идентичный пример в документации:
+**Опечатка?** В примере в документации в объекте cluster используется свойство numbers, однако, скорее всего, имелось в виду number.
 ```
-objectManager.clusters.events.add('add', function (e) {
-    let cluster = objectManager.clusters.getById(e.get('objectId'));
-    if (cluster.properties.geoObjects.some(object => !object.isActive)) {
-      cluster.options.preset = 'islands#redClusterIcons';
-    }
-  });
+function onClusterCollectionAdd (e) {
+   var cluster = e.get('child');
+   // Для кластеров, в состав которых входит больше 10 меток,
+   // зададим значок красного цвета.
+   if (cluster.numbers > 10) {
+       objectManager.clusters.setClusterOptions(cluster.id, {
+           preset: 'islands#redClusterIcons'
+       });
+   }
+}
+// Подписываемся на событие добавления кластера в коллекцию.
+objectManager.clusters.events.add(['add'], onClusterCollectionAdd);
+```
+
+В качестве условия проверяем массив входящих в него геообъектов на предмет вхождения хотя бы одного дефектного элемента при помощи функции Array.prototype.some().
+```
+if (cluster.properties.geoObjects.some(object => !object.isActive)) {
 ```
 
 Получаем следующую картину:
 ![5](https://pp.userapi.com/c846019/v846019655/a61c7/Om_mnx-fsWM.jpg)
 
-## Отображение попапа при клике на объект
-TODO
+## Незакрытый div в шаблоне балуна
+Переходим к отображению балуна
+При открытии файла, первым делом проверил верстку в шаблоне, паучье чутье не подвело :)
+details.js:
+```
+const BalloonContentLayout = ymaps.templateLayoutFactory.createClass(
+    `<div class="details-info">
+      </div>
+    `,
+```
+
+## Модуль popup
+Стоп, а зачем нам модуль popup.js? Модуль с функцией getPopupContent() нигде не испортируется, а его функционал похож на генерацию шаблона для details.js. Модуль обрабатывает данные, которых нет в текущей версии приложения.
+```
+ <td>${obj.operator}</td>
+```
+
+По всей видимости, данный модуль является устаревшим и в основной ветке подлежит удалению.
+
+## Контекст стрелочной функции
+При попытке открыть балун, получаем длинное исключение в консоль.
+![6](https://pp.userapi.com/c848624/v848624231/34252/w7JVN2QAlQQ.jpg)
+
+Отсутствие модулей приложения в стэке вызовов сигнализирует о передаче неверного аргумента в предоставляемую функцию. Пробуем найти момент, когда кидается исключение. Ставим debugger в самое начало переопределения функции build в details.js, заходит. И далее не выполняется следующая строка
+```
+BalloonContentLayout.superclass.build.call(this);
+``` 
+
+В данном случае, передается неверный контекст. Стрелочная функция сохраняет контекст модуля, который является undefined, в то время как в
+```
+build: function() { this }
+```
+this будет содержать ссылку на объект, который будет вызывать данный метод. Меняем в details.js стрелочные функции на function()
+```
+build: function() {
+clear: function() {
+```
+
+Теперь балун отображается корректно, осталось поправить ошибки в графике
+![7](https://pp.userapi.com/c845520/v845520975/a74d3/kTAkuVmweUI.jpg)
+
+## Отображение графика
+
+
+## 
 
 ## Бонус. Формат индекса
 Стилизационное украшение. Задание формата индекса позволит работать с индексами, похожими на действущие по г. Москва
 ```
 serialNumber: faker.address.zipCode("1#####"),
 ```
-
-## Бонус. Ошибка окружения
-Перед первым запуском, после запуска webpack-dev-server получил ошибку webpack'a несмотря на то, что версия webpack обновлена до 4.16.1 и [оператор расширения для объектов находится в finished proposals](https://github.com/tc39/proposals/blob/master/finished-proposals.md), а значит, должен находится в последней спецификацией языка и транспилироваться при помощи webpack без babel
-```
-res.json({ ...info, ...details });
-Unexpected token ...
-```
-Обновление npm при помощи [npm-windows-upgrade](https://github.com/felixrieseberg/npm-windows-upgrade) не дало результатов.
-Проблема была решена переустановкой Node.js вместе с npm
 
 ---
 
