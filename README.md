@@ -30,14 +30,14 @@ import { initMap } from "./map";
 ```
 
 ## Отображение станций
-Карта отображается, но на ней нет станций. Сравниваем содержимое файла map.js с [документацией](https://tech.yandex.ru/maps/doc/jsapi/2.1/dg/concepts/object-manager/about-docpage/) и примером в [песочнице](https://tech.yandex.ru/maps/jsbox/2.1/object_manager), обнаруживаем, что несмотря на то, что объекты были созданы,
+Карта отображается, но на ней нет станций. Сравниваем содержимое файла map.js с [документацией](https://tech.yandex.ru/maps/doc/jsapi/2.1/dg/concepts/object-manager/about-docpage/) и примером в [песочнице](https://tech.yandex.ru/maps/jsbox/2.1/object_manager), обнаруживаем, что несмотря на то, что объекты были созданы, разработчик забыл добавить их на карту.
 ```
 loadList().then(data => {
     console.log(data);
     objectManager.add(data);
   });
 ```
-они не добавляются на карту. Исправляем: 
+Исправляем: 
 ```
 myMap.geoObjects.add(objectManager);
 ```
@@ -121,15 +121,28 @@ clear: function() {
 ![7](https://pp.userapi.com/c845520/v845520975/a74d3/kTAkuVmweUI.jpg)
 
 ## Отображение графика
+Ошибок в консоли нет, график не отображается. Скорее всего, ошибка логическая. Благодаря удачному наименованию параметров, ошибку можно заметить, даже не прибегая к документации. Значения по оси Y от нуля до нуля - явное противоречие
+```
+yAxes: [{ ticks: { beginAtZero: true, max: 0 } }]
+```
 
+Варианты решения [замечательно описаны](http://www.chartjs.org/docs/latest/axes/cartesian/linear.html#axis-range-settings). 
+Наиболее оправданным решением считаю не устанавливать максимальное значение (или установить suggestedMax вместо max), а также явно указать stepSize для более удобного восприятия информации
 
-## 
+## Опционально. Формат даты
+Стилизационное украшение.
+в chart.js
+```
+return x.toLocaleString();
+```
+![8](https://pp.userapi.com/c849528/v849528576/29d59/m4Lv4y0t-DQ.jpg)
 
-## Бонус. Формат индекса
+## Опционально. Формат индекса
 Стилизационное украшение. Задание формата индекса позволит работать с индексами, похожими на действущие по г. Москва
 ```
 serialNumber: faker.address.zipCode("1#####"),
 ```
+![9](https://pp.userapi.com/c849528/v849528576/29d68/rszZTVdN9aM.jpg)
 
 ---
 

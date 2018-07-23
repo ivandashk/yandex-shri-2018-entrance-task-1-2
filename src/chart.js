@@ -12,7 +12,7 @@ function getLabel(el, i, data) {
   x.setMinutes(0);
   x.setSeconds(0);
   x.setMilliseconds(0);
-  return x.toString();
+  return x.toLocaleString();
 }
 
 export function createChart(container, data, isActive) {
@@ -40,7 +40,7 @@ export function createChart(container, data, isActive) {
         },
         scales: {
             xAxes: [{ ticks: { display: false } }],
-            yAxes: [{ ticks: { beginAtZero: true, max: 0 } }]
+            yAxes: [{ ticks: { beginAtZero: true, stepSize: 2 } }]
         }
     }
   });
