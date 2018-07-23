@@ -80,8 +80,9 @@ if (cluster.properties.geoObjects.some(object => !object.isActive)) {
 ![5](https://pp.userapi.com/c846019/v846019655/a61c7/Om_mnx-fsWM.jpg)
 
 ## Незакрытый div в шаблоне балуна
-Переходим к отображению балуна
-При открытии файла, первым делом проверил верстку в шаблоне, паучье чутье не подвело :)
+Переходим к отображению балуна.
+
+При открытии файла, первым делом, проверил верстку в шаблоне, паучье чутье не подвело :)
 details.js:
 ```
 const BalloonContentLayout = ymaps.templateLayoutFactory.createClass(
