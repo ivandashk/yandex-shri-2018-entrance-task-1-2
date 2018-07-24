@@ -111,6 +111,7 @@ BalloonContentLayout.superclass.build.call(this);
 
 В данном случае передается неверный контекст. Стрелочная функция сохраняет контекст модуля details.js со значением undefined, в то время как требуется содержать ссылку на объект, который будет вызывать данный метод из combine.js.
 ![5](https://pp.userapi.com/c848416/v848416100/36f46/Ys6YMTdtEMI.jpg)
+
 Меняем в details.js стрелочные функции переопределения build и clear на function()
 ```
 build: function() {
