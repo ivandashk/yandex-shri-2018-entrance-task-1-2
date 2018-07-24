@@ -137,8 +137,7 @@ yAxes: [{ ticks: { beginAtZero: true, max: 0 } }]
 ![8](https://pp.userapi.com/c848416/v848416100/36f74/CQhHGRVDzUU.jpg)
 
 ## Опционально. Формат даты
-Стилизационное украшение.
-в chart.js
+Стилизационное украшение. Более удобное восприятие даты и времени:
 ```
 return x.toLocaleString();
 ```
