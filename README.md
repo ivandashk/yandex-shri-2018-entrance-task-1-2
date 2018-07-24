@@ -82,7 +82,7 @@ if (cluster.properties.geoObjects.some(object => !object.isActive)) {
 ## Незакрытый div в шаблоне балуна
 Переходим к отображению балуна.
 
-При открытии файла, первым делом, проверил верстку в шаблоне, паучье чутье не подвело :)
+При открытии файла, первым делом, проверил верстку в шаблоне. Паучье чутье не подвело :)
 details.js:
 ```
 const BalloonContentLayout = ymaps.templateLayoutFactory.createClass(
